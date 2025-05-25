@@ -1,5 +1,6 @@
 import numpy as np
 from manim import *
+from typing import Optional
 
 
 
@@ -9,16 +10,16 @@ class LinearRegression:
     Includes support for intercept and animation via Manim.
     """
     
-    def __init__(self,fit_intercept=True):
+    def __init__(self, fit_intercept: bool = True) -> None:
         self.fit_intercept = fit_intercept
         self.weights=None
 
 
-    def add_bias(self,X):  
+    def add_bias(self, X: np.ndarray) -> np.ndarray:
         return np.hstack((X, np.ones((X.shape[0], 1))))
 
 
-    def fit(self,X,y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """
         Compute the weights of the closed-form linear regression with input variable X and output variable y
         """
@@ -38,7 +39,7 @@ class LinearRegression:
 
         self.weights= inverse.dot(X_bias.T).dot(y)
 
-    def predict(self,X):
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Returns the predicted value from the input matrix X
         """
@@ -56,7 +57,7 @@ class LinearRegression:
         
         return(X_bias.dot(self.weights))
 
-    def r2_score(self,X,y):
+    def r2_score(self, X: np.ndarray, y: np.ndarray) -> float:
         """
         Compute r squared between the y predicted and the y provided.
         """
@@ -85,7 +86,7 @@ class LinearRegression:
         return r2_score
 
 
-    def fit_and_animate(self, X, y, quality="low_quality"):
+    def fit_and_animate(self, X: np.ndarray, y: np.ndarray, quality: str = "low_quality") -> None:
         """
         Compute the weights and create an animation showing the linear regression process
         """
