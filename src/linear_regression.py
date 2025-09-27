@@ -16,7 +16,7 @@ class LinearRegression:
 
 
     def add_bias(self, X: np.ndarray) -> np.ndarray:
-        return np.hstack((X, np.ones((X.shape[0], 1))))
+        return np.hstack((np.ones((X.shape[0], 1)), X))
 
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
@@ -86,9 +86,16 @@ class LinearRegression:
         return r2_score
 
 
-    def fit_and_animate(self, X: np.ndarray, y: np.ndarray, quality: str = "low_quality") -> None:
+    def fit_and_animate(self, X: np.ndarray, y: np.ndarray, quality: str = "low_quality", output_dir: str = None) -> None:
         """
         Compute the weights and create an animation showing the linear regression process
+
+
+        Args:
+            X: Input features
+            y: Target values
+            quality: Animation quality ("low_quality", "medium_quality", "high_quality", etc.)
+            output_dir: Directory to save the animation output. If None, uses default manim directory.
         """
         # First check dimensions like in fit method
         if np.shape(X)[0] != np.shape(y)[0]:
@@ -276,23 +283,37 @@ class LinearRegression:
                     inner_self.play(FadeOut(intercept_label))
 
                 # Get data range for better axis scaling - start from 0
-                x_min, x_max = 0, max(np.max(X), 10)
-                y_min, y_max = 0, max(np.max(y), 10)
+                x_min, x_max = np.min(X), np.max(X)
+                y_min, y_max = np.min(y), np.max(y)
                 
-                # Round up to nice values
-                x_max = np.ceil(x_max / 5) * 5
-                y_max = np.ceil(y_max / 5) * 5
+                # Add padding (10% on each side)
+                x_padding = (x_max - x_min) * 0.1
+                y_padding = (y_max - y_min) * 0.1
+                x_min -= x_padding
+                x_max += x_padding
+                y_min -= y_padding
+                y_max += y_padding
+
+                # Round to nice values
+                x_range = x_max - x_min
+                y_range = y_max - y_min
+                x_step = np.ceil(x_range / 10)
+                y_step = np.ceil(y_range / 10)
+                x_min = np.floor(x_min / x_step) * x_step
+                x_max = np.ceil(x_max / x_step) * x_step
+                y_min = np.floor(y_min / y_step) * y_step
+                y_max = np.ceil(y_max / y_step) * y_step
                 
                 axes = Axes(
-                    x_range=[0, x_max, x_max/10],
-                    y_range=[0, y_max, y_max/10],
+                    x_range=[x_min, x_max, x_step],
+                    y_range=[y_min, y_max, y_step],
                     x_length=8,
                     y_length=5,
                     axis_config={
                         "include_numbers": True,
                         "include_tip": True,
                         "numbers_to_exclude": [],
-                        "decimal_number_config": {"num_decimal_places": 0}
+                        "decimal_number_config": {"num_decimal_places": 1}
                     }
                 ).to_edge(DOWN)
                 
@@ -308,10 +329,7 @@ class LinearRegression:
                 inner_self.play(Create(dots))
 
                 # Create regression line
-                x_plot_min = 0
-                x_plot_max = x_max
-                
-                X_plot = np.linspace(x_plot_min, x_plot_max, 100).reshape(-1, 1)
+                X_plot = np.linspace(x_min, x_max, 100).reshape(-1, 1)
                 y_plot = self.predict(X_plot)
                 
                 reg_line = axes.plot_line_graph(
@@ -388,7 +406,7 @@ class LinearRegression:
                 # Step 5: Show total deviations only
                 ########################
                 y_mean = np.mean(y)
-                mean_line = axes.plot(lambda x: y_mean, x_range=[0, x_max], color=GREEN)
+                mean_line = axes.plot(lambda x: y_mean, x_range=[x_min, x_max], color=GREEN)
                 mean_label = MathTex(r"\bar{y}", color=GREEN).next_to(axes.c2p(x_max, y_mean), RIGHT)
                 
                 inner_self.play(Create(mean_line), Write(mean_label))
@@ -468,6 +486,12 @@ class LinearRegression:
         # Fix quality mapping
         from manim import config
         config.quality = quality
+
+        # Set output directory if specified
+        if output_dir is not None:
+            import os
+            os.makedirs(output_dir, exist_ok=True)
+            config.media_dir = str(output_dir) 
 
         # Render scene
         scene = LinearRegressionAnimation()
