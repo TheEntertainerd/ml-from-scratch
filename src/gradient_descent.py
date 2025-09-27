@@ -15,7 +15,8 @@ class GradientDescent:
         max_iterations: int, 
         optimizable: Optimizable, 
         tolerance: Optional[float] = None, 
-        visualizer: Optional[OptimizationVisualizer] = None
+        visualizer: Optional[OptimizationVisualizer] = None,
+        verbosity: int = 0,
     ) -> None:
         
         self.learning_rate = learning_rate
@@ -23,6 +24,7 @@ class GradientDescent:
         self.optimizable = optimizable
         self.tolerance = tolerance
         self.visualizer = visualizer
+        self.verbosity = verbosity
         
             
 
@@ -56,6 +58,9 @@ class GradientDescent:
 
             if np.linalg.norm(gradient) == 0:
                 break
+
+            if self.verbosity==1:
+                print(f"Step {i}: Gradient = {gradient}")
 
         if self.visualizer:
             self.visualizer.visualize(param_history, value_history, gradient_history)
