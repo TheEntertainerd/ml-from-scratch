@@ -1,7 +1,6 @@
 import numpy as np
 from src.utils.optimizable import Optimizable
 from src.utils.visualizer import OptimizationVisualizer
-from manim import *
 from typing import Optional, Any, Tuple
 
 class GradientDescent:
