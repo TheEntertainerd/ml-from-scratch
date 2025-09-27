@@ -3,30 +3,28 @@ from src.utils.optimizable import Optimizable
 from src.utils.visualizer import OptimizationVisualizer
 from typing import Optional, Any, Tuple
 
+
 class GradientDescent:
-    '''
+    """
     Generic gradient descent class
-    Takes as an input learning rate, max_iterations, and an Optimizable object with parameters (getters, setters), gradient, forward and 
-    '''
+    Takes as an input learning rate, max_iterations, and an Optimizable object with parameters (getters, setters), gradient, forward and
+    """
+
     def __init__(
-        self, 
-        learning_rate: float, 
-        max_iterations: int, 
-        optimizable: Optimizable, 
-        tolerance: Optional[float] = None, 
+        self,
+        learning_rate: float,
+        max_iterations: int,
+        optimizable: Optimizable,
+        tolerance: Optional[float] = None,
         visualizer: Optional[OptimizationVisualizer] = None,
         verbosity: int = 0,
     ) -> None:
-        
         self.learning_rate = learning_rate
         self.max_iterations = max_iterations
         self.optimizable = optimizable
         self.tolerance = tolerance
         self.visualizer = visualizer
         self.verbosity = verbosity
-        
-            
-
 
     def find_optimal(self) -> Tuple[np.ndarray, Any]:
         """
@@ -36,10 +34,9 @@ class GradientDescent:
             param_history = []
             value_history = []
             gradient_history = []
-        
+
         for i in range(self.max_iterations):
-            
-            old_params =  self.optimizable.get_params()            
+            old_params = self.optimizable.get_params()
             gradient = self.optimizable.gradient(old_params)
 
             if self.visualizer:
@@ -58,7 +55,7 @@ class GradientDescent:
             if np.linalg.norm(gradient) == 0:
                 break
 
-            if self.verbosity==1:
+            if self.verbosity == 1:
                 print(f"Step {i}: Gradient = {gradient}")
 
         if self.visualizer:

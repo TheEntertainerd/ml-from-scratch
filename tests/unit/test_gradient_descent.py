@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from src.gradient_descent import GradientDescent
 from src.utils.polynomial import Optimizable
 from unittest.mock import MagicMock
@@ -11,12 +10,14 @@ def test_gradient_descent_runs_only_once_on_zero_gradient() -> None:
         def __init__(self, params: np.ndarray):
             super().__init__(params)
             self.calls = 0
+
         def gradient(self, parameters: np.ndarray) -> np.ndarray:
-            self.calls += 1 # Count number of calls
+            self.calls += 1  # Count number of calls
             return np.zeros_like(parameters)
 
         def forward(self, _parameters: np.ndarray) -> float:
             return 0
+
     start_params = np.array([1.0])
     opt = SimpleOpt(start_params)
     gd = GradientDescent(learning_rate=0.1, max_iterations=50, optimizable=opt)
@@ -25,13 +26,14 @@ def test_gradient_descent_runs_only_once_on_zero_gradient() -> None:
     np.testing.assert_allclose(final_params, start_params)
 
 
-
 def test_gradient_descent_stops_on_tolerance() -> None:
     class SimpleOpt(Optimizable):
         def gradient(self, parameters: np.ndarray) -> np.ndarray:
             return parameters  # grad = x
+
         def forward(self, parameters: np.ndarray) -> float:
             return float(0.5 * np.sum(parameters**2))
+
     start_params = np.array([1e-8])
     optimizable = SimpleOpt(start_params.copy())
     gd = GradientDescent(learning_rate=0.1, max_iterations=50, optimizable=optimizable, tolerance=1e-6)
@@ -45,8 +47,10 @@ def test_gradient_descent_verbosity_prints(capsys: CaptureFixture[str]) -> None:
     class SimpleOpt(Optimizable):
         def gradient(self, _params: np.ndarray) -> np.ndarray:
             return np.array([1.0])
+
         def forward(self, params: np.ndarray) -> float:
             return float(params[0])
+
     opt = SimpleOpt(np.array([1.0]))
     gd = GradientDescent(learning_rate=0.1, max_iterations=1, optimizable=opt, verbosity=1)
     gd.find_optimal()
@@ -58,8 +62,10 @@ def test_gradient_descent_calls_visualizer() -> None:
     class SimpleOpt(Optimizable):
         def gradient(self, _params: np.ndarray) -> np.ndarray:
             return np.array([1.0])
+
         def forward(self, params: np.ndarray) -> float:
             return float(params[0])
+
     opt = SimpleOpt(np.array([1.0]))
     mock_vis = MagicMock()
     gd = GradientDescent(learning_rate=0.1, max_iterations=2, optimizable=opt, visualizer=mock_vis)
