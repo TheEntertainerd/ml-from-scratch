@@ -1,3 +1,4 @@
+# pragma: no cover
 from abc import ABC, abstractmethod
 import numpy as np
 from typing import Optional, Any, Tuple, List, Dict
