@@ -46,7 +46,7 @@ class MultivariatePolynomial:
         """        
         
         if len(values_variables) != len(next(iter(self.dictionary_coefficients))):
-            print('Number of variables passed does not match that of the polynome')
+            raise ValueError('Number of variables passed does not match that of the polynome')
 
         result = 0
         for term in self.dictionary_coefficients:
@@ -121,7 +121,8 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
         x_step: float = 1.0, 
         y_step: Optional[float] = None, 
         z_step: Optional[float] = None, 
-        quality: str = "low_quality"
+        quality: str = "low_quality",
+        output_dir: str = None
     ) -> None:
         """
         Class to visualize polynome optimization for Gradient Descent minimization
@@ -135,6 +136,7 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
         self.y_step = y_step if y_step else x_step
         self.z_step = z_step if z_step else x_step
         self.quality = quality
+        self.output_dir = output_dir
         
     def _format_number(self, num: float) -> str:
         """Helper function to format numbers up to 3 decimal places"""
@@ -166,7 +168,7 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
         elif plot_dim == 2:
             self._visualize_3d(param_history, value_history, gradient_history)
         else:
-            raise ValueError(f"Cannot visualize optimization for {plot_dim}D parameter space")
+            raise ValueError(f"Cannot visualize optimization for polynome of {plot_dim} variables")
     
     def _visualize_2d(
         self, 
@@ -284,6 +286,11 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
                     inner_self.wait(0.5)
                 
         config.quality = self.quality
+        # Set output directory if specified
+        if self.output_dir is not None:
+            import os
+            os.makedirs(self.output_dir, exist_ok=True)
+            config.media_dir = str(self.output_dir) 
         scene = GradientDescent2DAnimation()
         scene.render()
     
@@ -432,7 +439,11 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
                 inner_self.wait(3)
 
         config.quality = self.quality
-        config.disable_caching = True # Too many elements in 3d
-        
+        config.disable_caching = True # Too many elements in 3d    
+        # Set output directory if specified
+        if self.output_dir is not None:
+            import os
+            os.makedirs(self.output_dir, exist_ok=True)
+            config.media_dir = str(self.output_dir)      
         scene = GradientDescent3DAnimation()
         scene.render()
