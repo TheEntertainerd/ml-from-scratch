@@ -1,7 +1,6 @@
 import glob
 import os
 import re
-from typing import List, Tuple
 
 import genanki
 
@@ -10,14 +9,14 @@ BASIC_PATTERN = os.path.join(HERE, "*/basic.md")
 ADVANCED_PATTERN = os.path.join(HERE, "*/advanced.md")
 
 # A card is (front text, back text, tags)
-Card = Tuple[str, str, List[str]]
+Card = tuple[str, str, list[str]]
 
 
-def parse_md(path: str) -> List[Card]:
+def parse_md(path: str) -> list[Card]:
     """Parse a markdown file into a list of (front, back, tags) cards."""
     with open(path, encoding="utf-8") as f:
         sections = f.read().split("---")
-    cards: List[Card] = []
+    cards: list[Card] = []
     for sec in sections:
         mF = re.search(r"\*\*Front:\*\*\s*(.*?)$", sec, re.M)
         mB = re.search(r"\*\*Back:\*\*\s*([\s\S]*?)(?=\n\*\*Tags:\*\*|\Z)", sec, re.DOTALL)
@@ -30,7 +29,7 @@ def parse_md(path: str) -> List[Card]:
     return cards
 
 
-def build_subdecks(level: str, decks_list: List[genanki.Deck], deck_id_base: int) -> None:
+def build_subdecks(level: str, decks_list: list[genanki.Deck], deck_id_base: int) -> None:
     """Build subdecks (basic or advanced) and append them to decks_list."""
     pattern = BASIC_PATTERN if level == "basic" else ADVANCED_PATTERN
 
@@ -70,7 +69,7 @@ def build_subdecks(level: str, decks_list: List[genanki.Deck], deck_id_base: int
 
 
 if __name__ == "__main__":
-    all_decks: List[genanki.Deck] = []
+    all_decks: list[genanki.Deck] = []
     build_subdecks("basic", all_decks, 1000000000)
     build_subdecks("advanced", all_decks, 2000000000)
     OUTPUT_DIR = os.path.join(HERE, "apkg")

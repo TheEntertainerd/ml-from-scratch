@@ -1,7 +1,6 @@
 # pragma: no cover
 from abc import ABC, abstractmethod
 import numpy as np
-from typing import List
 
 
 class OptimizationVisualizer(ABC):
@@ -11,6 +10,6 @@ class OptimizationVisualizer(ABC):
 
     @abstractmethod
     def visualize(
-        self, param_history: List[np.ndarray], value_history: List[float], gradient_history: List[np.ndarray]
+        self, param_history: list[np.ndarray], value_history: list[float], gradient_history: list[np.ndarray]
     ) -> None:
         pass

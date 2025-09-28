@@ -1,5 +1,5 @@
 import numpy as np
 import numpy.typing as npt
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-VectorLike = Union[Sequence[float], npt.NDArray[np.float64]]
+VectorLike = Sequence[float] | npt.NDArray[np.float64]

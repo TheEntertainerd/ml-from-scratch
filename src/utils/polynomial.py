@@ -2,7 +2,7 @@ import numpy as np
 from src.utils.optimizable import Optimizable
 from src.utils.visualizer import OptimizationVisualizer
 import manim as mn
-from typing import Optional, Tuple, List, Dict, cast
+from typing import cast
 from src.utils.types import VectorLike
 
 
@@ -18,7 +18,7 @@ class MultivariatePolynomial:
     }
     """
 
-    def __init__(self, dictionary_coefficients: Dict[Tuple[int, ...], float]) -> None:
+    def __init__(self, dictionary_coefficients: dict[tuple[int, ...], float]) -> None:
         if len(dictionary_coefficients) == 0:
             raise ValueError("Dictionary is empty")
         first_key = next(iter(dictionary_coefficients))
@@ -94,7 +94,7 @@ class MultivariatePolynomialOptimizable(Optimizable):
     Class representing the Optimizable polynome adapted for Gradient Descent
     """
 
-    def __init__(self, dictionary_coefficients: Dict[Tuple[int, ...], float], parameters: np.ndarray) -> None:
+    def __init__(self, dictionary_coefficients: dict[tuple[int, ...], float], parameters: np.ndarray) -> None:
         super().__init__(parameters)
         self.dictionary_coefficients = dictionary_coefficients
         self.polynome = MultivariatePolynomial(dictionary_coefficients)
@@ -111,12 +111,12 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
         self,
         optimizable: Optimizable,
         learning_rate: float,
-        x_range: Tuple[float, float] = (-3, 3),
-        y_range: Optional[Tuple[float, float]] = None,
-        z_range: Optional[Tuple[float, float]] = None,
+        x_range: tuple[float, float] = (-3, 3),
+        y_range: tuple[float, float] | None = None,
+        z_range: tuple[float, float] | None = None,
         x_step: float = 1.0,
-        y_step: Optional[float] = None,
-        z_step: Optional[float] = None,
+        y_step: float | None = None,
+        z_step: float | None = None,
         quality: str = "low_quality",
         output_dir: str = "",
     ) -> None:
@@ -150,7 +150,7 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
         return len(sample_params)
 
     def visualize(
-        self, param_history: List[np.ndarray], value_history: List[float], gradient_history: List[np.ndarray]
+        self, param_history: list[np.ndarray], value_history: list[float], gradient_history: list[np.ndarray]
     ) -> None:
         """Main visualization method"""
         plot_dim = self._get_plot_dimension()
@@ -163,7 +163,7 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
             raise ValueError(f"Cannot visualize optimization for polynome of {plot_dim} variables")
 
     def _visualize_2d(
-        self, param_history: List[np.ndarray], value_history: List[float], gradient_history: List[np.ndarray]
+        self, param_history: list[np.ndarray], value_history: list[float], gradient_history: list[np.ndarray]
     ) -> None:
         """2D visualization for single-parameter optimization"""
 
@@ -285,7 +285,7 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):
         scene.render()
 
     def _visualize_3d(
-        self, param_history: List[np.ndarray], value_history: List[float], gradient_history: List[np.ndarray]
+        self, param_history: list[np.ndarray], value_history: list[float], gradient_history: list[np.ndarray]
     ) -> None:
         """3D visualization for two-parameter optimization"""
 
