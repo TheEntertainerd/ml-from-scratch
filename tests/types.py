@@ -1,9 +1,8 @@
-from typing import Tuple, Dict
 import numpy as np
 import numpy.typing as npt
 
 
-PolynomialCase = Tuple[Dict[Tuple[int, ...], float], np.ndarray, float, np.ndarray]
+PolynomialCase = tuple[dict[tuple[int, ...], float], np.ndarray, float, np.ndarray]
 
 DatasetTrainTest = tuple[
     npt.NDArray[np.float64],  # X_train

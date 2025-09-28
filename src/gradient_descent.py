@@ -1,7 +1,7 @@
 import numpy as np
 from src.utils.optimizable import Optimizable
 from src.utils.visualizer import OptimizationVisualizer
-from typing import Optional, Any, Tuple
+from typing import Any
 
 
 class GradientDescent:
@@ -15,8 +15,8 @@ class GradientDescent:
         learning_rate: float,
         max_iterations: int,
         optimizable: Optimizable,
-        tolerance: Optional[float] = None,
-        visualizer: Optional[OptimizationVisualizer] = None,
+        tolerance: float | None = None,
+        visualizer: OptimizationVisualizer | None = None,
         verbosity: int = 0,
     ) -> None:
         self.learning_rate = learning_rate
@@ -26,7 +26,7 @@ class GradientDescent:
         self.visualizer = visualizer
         self.verbosity = verbosity
 
-    def find_optimal(self) -> Tuple[np.ndarray, Any]:
+    def find_optimal(self) -> tuple[np.ndarray, Any]:
         """
         Optimize the optimizable function passed and visualize it if visualizer defined
         """
