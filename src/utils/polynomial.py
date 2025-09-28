@@ -106,7 +106,7 @@ class MultivariatePolynomialOptimizable(Optimizable):
         return self.polynome(parameters)
 
 
-class MultivariatePolynomialVisualizer(OptimizationVisualizer):
+class MultivariatePolynomialVisualizer(OptimizationVisualizer):  # pragma: slow-cover
     def __init__(
         self,
         optimizable: Optimizable,

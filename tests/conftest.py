@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 import pytest
 from typing import cast
 from tests.types import PolynomialCase, DatasetTrainTest
+import coverage
+from _pytest.config import Config
 
 
 @pytest.fixture(scope="module")
@@ -98,3 +100,23 @@ def california_housing_dataset() -> DatasetTrainTest:
 )
 def polynomial_case(request: pytest.FixtureRequest) -> PolynomialCase:
     return cast(PolynomialCase, request.param)
+
+
+def pytest_configure(config: Config) -> None:
+    """
+    If "not slow", exclude all sections marked with "pragma: slow cover" from the coverage
+    """
+    cov = coverage.Coverage.current()
+    if cov is None:
+        return
+
+    marker_expr = config.getoption("-m") or ""
+    if "not slow" in marker_expr:
+        # keep pragma: slow-cover excluded (default in .coveragerc)
+        return
+
+    # Otherwise, remove all excludes and re-add only normal ones
+    cov.clear_exclude("report")
+
+    # Re-register the default exclusions
+    cov.exclude(r"pragma: no cover", which="report")

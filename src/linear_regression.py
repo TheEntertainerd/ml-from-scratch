@@ -89,7 +89,9 @@ class LinearRegression:
 
         return r2_score
 
-    def fit_and_animate(self, X: np.ndarray, y: np.ndarray, quality: str = "low_quality", output_dir: str = "") -> None:
+    def fit_and_animate(
+        self, X: np.ndarray, y: np.ndarray, quality: str = "low_quality", output_dir: str = ""
+    ) -> None:  # pragma: slow-cover
         """
         Compute the weights and create an animation showing the linear regression process
 
