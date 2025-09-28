@@ -1,0 +1,43 @@
+name: Bug Report
+description: Report an error, crash, or incorrect behavior
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include as much detail as possible so the bug can be reproduced.
+  - type: input
+    id: summary
+    attributes:
+      label: Bug Summary
+      placeholder: "LinearRegression fit fails with empty input"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Create model
+        2. Call .fit([] , [])
+        3. Observe error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      placeholder: "Should raise ValueError with clear message"
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      placeholder: "IndexError: list index out of range"
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Minor (small glitch)
+        - Major (breaks core functionality)
+        - Critical (crash or data loss)
