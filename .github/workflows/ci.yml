@@ -19,27 +19,55 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
-
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Fetch full history for git diff operations in slow-cover detection
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-
-      - name: Install system deps for Manim + LaTeX
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            libcairo2-dev libpango1.0-dev pkg-config python3-dev ffmpeg \
-            texlive texlive-latex-extra texlive-fonts-extra \
-            texlive-latex-recommended texlive-science tipa dvisvgm
+          
+      # Cache system dependencies (apt packages)
+      - name: Cache system dependencies  
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libcairo2-dev libpango1.0-dev pkg-config python3-dev ffmpeg
+          version: 1.0
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install .[dev,animations]
+
+
+      # Optimization: Skip slow tests when only non-slow-cover code changes
+      - name: Check for slow-cover pragma changes
+        id: check-slow-cover
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_SHA="HEAD~1"
+          fi
+          
+          if python scripts/check_slow_cover_changes.py $BASE_SHA; then
+            echo "PYTEST_ARGS=--cov=src --cov-report=html --cov-fail-under=80" >> $GITHUB_OUTPUT
+            echo "INSTALL_LATEX=true" >> $GITHUB_OUTPUT
+            echo "Will run all tests (including slow ones) and install LaTeX"
+          else
+            echo "PYTEST_ARGS=-m \"not slow\" --cov=src --cov-report=html --cov-fail-under=80" >> $GITHUB_OUTPUT
+            echo "INSTALL_LATEX=false" >> $GITHUB_OUTPUT
+            echo "Will skip slow tests and LaTeX installation"
+          fi
+
+      - name: Install LaTeX (only for slow tests)
+        if: steps.check-slow-cover.outputs.INSTALL_LATEX == 'true'
+        run: |
+          sudo apt-get install -y texlive texlive-latex-extra dvisvgm
+        
 
       - name: Run Ruff (lint)
         run: ruff check .
@@ -48,7 +76,7 @@ jobs:
         run: mypy src
 
       - name: Run pytest (with coverage)
-        run: pytest --cov=src --cov-report=html --cov-fail-under=80
+        run: pytest ${{ steps.check-slow-cover.outputs.PYTEST_ARGS }}
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
