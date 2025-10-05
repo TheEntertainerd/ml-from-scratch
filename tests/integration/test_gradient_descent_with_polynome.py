@@ -20,7 +20,16 @@ def test_gradient_descent_matches_scipy_simple() -> None:
         tolerance=1e-6,
     )
     gd_params, gd_value = gd.find_optimal()
-    res = minimize(poly.forward, start, jac=poly.gradient, tol=1e-6)
+
+    def forward_wrapper(params: np.ndarray) -> float:
+        poly.set_params(params)
+        return poly.forward()
+
+    def gradient_wrapper(params: np.ndarray) -> np.ndarray:
+        poly.set_params(params)
+        return poly.gradient()
+
+    res = minimize(forward_wrapper, start, jac=gradient_wrapper, tol=1e-6)
     np.testing.assert_allclose(gd_params, res.x, atol=1e-5)
     np.testing.assert_allclose(gd_value, res.fun, atol=1e-5)
 
@@ -42,7 +51,16 @@ def test_gradient_descent_matches_scipy_complex() -> None:
         tolerance=1e-6,
     )
     gd_params, gd_value = gd.find_optimal()
-    res = minimize(poly.forward, start, jac=poly.gradient, tol=1e-6)
+
+    def forward_wrapper(params: np.ndarray) -> float:
+        poly.set_params(params)
+        return poly.forward()
+
+    def gradient_wrapper(params: np.ndarray) -> np.ndarray:
+        poly.set_params(params)
+        return poly.gradient()
+
+    res = minimize(forward_wrapper, start, jac=gradient_wrapper, tol=1e-6)
     np.testing.assert_allclose(gd_params, res.x, atol=1e-5)
     np.testing.assert_allclose(gd_value, res.fun, atol=1e-5)
 

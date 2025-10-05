@@ -11,11 +11,11 @@ def test_gradient_descent_runs_only_once_on_zero_gradient() -> None:
             super().__init__(params)
             self.calls = 0
 
-        def gradient(self, parameters: np.ndarray) -> np.ndarray:
+        def gradient(self) -> np.ndarray:
             self.calls += 1  # Count number of calls
-            return np.zeros_like(parameters)
+            return np.zeros_like(self.parameters)
 
-        def forward(self, _parameters: np.ndarray) -> float:
+        def forward(self) -> float:
             return 0
 
     start_params = np.array([1.0])
@@ -28,11 +28,11 @@ def test_gradient_descent_runs_only_once_on_zero_gradient() -> None:
 
 def test_gradient_descent_stops_on_tolerance() -> None:
     class SimpleOpt(Optimizable):
-        def gradient(self, parameters: np.ndarray) -> np.ndarray:
-            return parameters  # grad = x
+        def gradient(self) -> np.ndarray:
+            return self.parameters  # grad = x
 
-        def forward(self, parameters: np.ndarray) -> float:
-            return float(0.5 * np.sum(parameters**2))
+        def forward(self) -> float:
+            return float(0.5 * np.sum(self.parameters**2))
 
     start_params = np.array([1e-8])
     optimizable = SimpleOpt(start_params.copy())
@@ -45,11 +45,11 @@ def test_gradient_descent_stops_on_tolerance() -> None:
 
 def test_gradient_descent_verbosity_prints(capsys: CaptureFixture[str]) -> None:
     class SimpleOpt(Optimizable):
-        def gradient(self, _params: np.ndarray) -> np.ndarray:
+        def gradient(self) -> np.ndarray:
             return np.array([1.0])
 
-        def forward(self, params: np.ndarray) -> float:
-            return float(params[0])
+        def forward(self) -> float:
+            return float(self.parameters[0])
 
     opt = SimpleOpt(np.array([1.0]))
     gd = GradientDescent(learning_rate=0.1, max_iterations=1, optimizable=opt, verbosity=1)
@@ -60,11 +60,11 @@ def test_gradient_descent_verbosity_prints(capsys: CaptureFixture[str]) -> None:
 
 def test_gradient_descent_calls_visualizer() -> None:
     class SimpleOpt(Optimizable):
-        def gradient(self, _params: np.ndarray) -> np.ndarray:
+        def gradient(self) -> np.ndarray:
             return np.array([1.0])
 
-        def forward(self, params: np.ndarray) -> float:
-            return float(params[0])
+        def forward(self) -> float:
+            return float(self.parameters[0])
 
     opt = SimpleOpt(np.array([1.0]))
     mock_vis = MagicMock()

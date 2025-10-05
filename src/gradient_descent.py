@@ -37,10 +37,10 @@ class GradientDescent:
 
         for i in range(self.max_iterations):
             old_params = self.optimizable.get_params()
-            gradient = self.optimizable.gradient(old_params)
+            gradient = self.optimizable.gradient()
 
             if self.visualizer:
-                value = self.optimizable.forward(old_params)
+                value = self.optimizable.forward()
                 param_history.append(old_params.copy())
                 value_history.append(value)
                 gradient_history.append(gradient.copy())
@@ -61,4 +61,4 @@ class GradientDescent:
         if self.visualizer:
             self.visualizer.visualize(param_history, value_history, gradient_history)
 
-        return self.optimizable.get_params(), self.optimizable.forward(self.optimizable.get_params())
+        return self.optimizable.get_params(), self.optimizable.forward()

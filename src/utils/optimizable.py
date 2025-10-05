@@ -6,7 +6,7 @@ from typing import Any
 
 class Optimizable(ABC):
     """
-    Abstract class defined a function that can be optimnized
+    Abstract class defined a function that can be optimized
     """
 
     def __init__(self, parameters: np.ndarray) -> None:
@@ -19,9 +19,9 @@ class Optimizable(ABC):
         return self.parameters
 
     @abstractmethod
-    def gradient(self, parameters: np.ndarray) -> np.ndarray:
+    def gradient(self) -> np.ndarray:
         pass
 
     @abstractmethod
-    def forward(self, parameters: np.ndarray) -> Any:
+    def forward(self) -> Any:
         pass
