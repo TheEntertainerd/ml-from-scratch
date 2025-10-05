@@ -99,11 +99,11 @@ class MultivariatePolynomialOptimizable(Optimizable):
         self.dictionary_coefficients = dictionary_coefficients
         self.polynome = MultivariatePolynomial(dictionary_coefficients)
 
-    def gradient(self, parameters: np.ndarray) -> np.ndarray:
-        return self.polynome.get_gradient(parameters)
+    def gradient(self) -> np.ndarray:
+        return self.polynome.get_gradient(self.parameters)
 
-    def forward(self, parameters: np.ndarray) -> float:
-        return self.polynome(parameters)
+    def forward(self) -> float:
+        return self.polynome(self.parameters)
 
 
 class MultivariatePolynomialVisualizer(OptimizationVisualizer):  # pragma: slow-cover
@@ -175,7 +175,8 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):  # pragma: slow-
 
                 # Get plot function
                 def plot_function(x: float) -> float:
-                    return float(self.optimizable.forward(np.array([x])))
+                    self.optimizable.set_params(np.array([x]))
+                    return float(self.optimizable.forward())
 
                 # If y_range is passed, use it, otherwise, infer it
                 if hasattr(self, "y_range") and self.y_range and len(self.y_range) == 2:
@@ -298,7 +299,8 @@ class MultivariatePolynomialVisualizer(OptimizationVisualizer):  # pragma: slow-
 
                 # Get plot function
                 def plot_function(u: float, v: float) -> float:
-                    return float(self.optimizable.forward(np.array([u, v])))
+                    self.optimizable.set_params(np.array([u, v]))
+                    return float(self.optimizable.forward())
 
                 # Set camera orientation
                 inner_self.set_camera_orientation(
