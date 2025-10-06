@@ -44,10 +44,9 @@ jobs:
           enable-cache: true
           cache-dependency-glob: |
             **/pyproject.toml
-            **/requirements.txt
 
       - name: Install dependencies (with uv)
-        run: uv pip install .[dev,animations]
+        run: uv pip install --system .[dev,animations]
 
 
 

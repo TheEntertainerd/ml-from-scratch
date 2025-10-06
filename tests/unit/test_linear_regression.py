@@ -8,8 +8,8 @@ from tests.types import DatasetTrainTest
 
 
 @pytest.mark.parametrize("fit_intercept", [True, False])
-def test_r2_score(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None:
-    X_train, y_train, X_test, y_test = synthetic_data
+def test_r2_score(synthetic_dataset: DatasetTrainTest, fit_intercept: bool) -> None:
+    X_train, y_train, X_test, y_test = synthetic_dataset
     lr_sklearn = LinearRegressionSklearn(fit_intercept=fit_intercept)
     lr_numpy = LinearRegressionNumpy(fit_intercept=fit_intercept)
     lr_numpy.fit(X_train, y_train)
@@ -20,8 +20,8 @@ def test_r2_score(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None
 
 
 @pytest.mark.parametrize("fit_intercept", [True, False])
-def test_r2_score_raises_on_model_not_fit(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None:
-    _, _, X_test, y_test = synthetic_data
+def test_r2_score_raises_on_model_not_fit(synthetic_dataset: DatasetTrainTest, fit_intercept: bool) -> None:
+    _, _, X_test, y_test = synthetic_dataset
     lr_numpy = LinearRegressionNumpy(fit_intercept=fit_intercept)
     with pytest.raises(ValueError, match="Model needs to be fit before predicting"):
         lr_numpy.r2_score(X_test, y_test)
@@ -69,8 +69,8 @@ def test_r2_score_raises_on_mismatch_dimensions_y(fit_intercept: bool) -> None:
 
 
 @pytest.mark.parametrize("fit_intercept", [True, False])
-def test_predict(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None:
-    X_train, y_train, X_test, _ = synthetic_data
+def test_predict(synthetic_dataset: DatasetTrainTest, fit_intercept: bool) -> None:
+    X_train, y_train, X_test, _ = synthetic_dataset
     lr_sklearn = LinearRegressionSklearn(fit_intercept=fit_intercept)
     lr_numpy = LinearRegressionNumpy(fit_intercept=fit_intercept)
     lr_numpy.fit(X_train, y_train)
@@ -81,8 +81,8 @@ def test_predict(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None:
 
 
 @pytest.mark.parametrize("fit_intercept", [True, False])
-def test_predict_raises_on_model_not_fit(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None:
-    _, _, X_test, _ = synthetic_data
+def test_predict_raises_on_model_not_fit(synthetic_dataset: DatasetTrainTest, fit_intercept: bool) -> None:
+    _, _, X_test, _ = synthetic_dataset
     lr_numpy = LinearRegressionNumpy(fit_intercept=fit_intercept)
     with pytest.raises(ValueError, match="Model needs to be fit before predicting"):
         lr_numpy.predict(X_test)
@@ -101,8 +101,8 @@ def test_predict_raises_on_mismatched_shapes(fit_intercept: bool) -> None:
 
 
 @pytest.mark.parametrize("fit_intercept", [True, False])
-def test_fit(synthetic_data: DatasetTrainTest, fit_intercept: bool) -> None:
-    X_train, y_train, _, _ = synthetic_data
+def test_fit(synthetic_dataset: DatasetTrainTest, fit_intercept: bool) -> None:
+    X_train, y_train, _, _ = synthetic_dataset
     lr_sklearn = LinearRegressionSklearn(fit_intercept=fit_intercept)
     lr_numpy = LinearRegressionNumpy(fit_intercept=fit_intercept)
     lr_numpy.fit(X_train, y_train)

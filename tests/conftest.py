@@ -9,7 +9,7 @@ from _pytest.config import Config
 
 
 @pytest.fixture(scope="module")
-def synthetic_data() -> DatasetTrainTest:
+def synthetic_dataset() -> DatasetTrainTest:
     np.random.seed(42)
     shape = (10000, 5)
     X_train = np.random.randint(0, 100, shape).astype(np.float64)
